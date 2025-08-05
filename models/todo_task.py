@@ -9,13 +9,13 @@ class TodoTask(models.Model):
     _description = "Todo Task"
 
     # ---------------------------------------- Fields Declaration ---------------------------------
-    task_name = fields.Char(required=1, default='New Task')
+    task_name = fields.Char(required=True, default='New Task')
     name = fields.Char(related='task_name')
     description = fields.Text()
     due_date = fields.Datetime(default=fields.datetime.now())
     estimated_time = fields.Float("Estimated Time (hrs)")
     active = fields.Boolean(default=True)
-    is_late = fields.Boolean(tracking=1)
+    is_late = fields.Boolean(tracking=True)
 
     # ---------------------------------------- Special ---------------------------------
     state = fields.Selection([
