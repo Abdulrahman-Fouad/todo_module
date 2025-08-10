@@ -9,6 +9,7 @@ class TodoTask(models.Model):
     _description = "Todo Task"
 
     # ---------------------------------------- Fields Declaration ---------------------------------
+    ref = fields.Char(default='New', readonly=True)
     task_name = fields.Char(required=True, default='New Task')
     name = fields.Char(related='task_name')
     description = fields.Text()
@@ -66,6 +67,14 @@ class TodoTask(models.Model):
             if rec.estimated_time and rec.estimated_time < total_time:
                 raise exceptions.ValidationError(
                     f"The Total Time {total_time} is greater than the Estimated Time {rec.estimated_time}")
+
+    # ---------------------------------------- Sequence -------------------------------------
+    @api.model_create_multi
+    def create(self, vals):
+        res = super(TodoTask, self).create(vals)
+        if res.ref == 'New':
+            res.ref = self.env['ir.sequence'].next_by_code('task_sequence')
+        return res
 
 
 class TodoTaskLines(models.Model):
