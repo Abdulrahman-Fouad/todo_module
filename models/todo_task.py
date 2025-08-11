@@ -13,7 +13,7 @@ class TodoTask(models.Model):
 
     # ---------------------------------------- Fields Declaration ---------------------------------
     ref = fields.Char(default='New', readonly=True)
-    task_name = fields.Char(required=True, default='New Task')
+    task_name = fields.Char(required=True, default='New Task', translate = True)
     name = fields.Char(related='task_name')
     description = fields.Text()
     due_date = fields.Datetime(default=fields.datetime.now())
