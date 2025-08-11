@@ -133,6 +133,16 @@
         <field name="res_model">todo.task</field>
     </record>
 
+    <record id="todo_task_assign_task_wizard_action" model="ir.actions.server">
+        <field name="name">Assign Task</field>
+        <field name="model_id" ref="model_todo_task"/>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_open_assign_task_wizard()
+        </field>
+    </record>
+
     <menuitem
             id="all_task_menu_item"
             name="All Tasks"

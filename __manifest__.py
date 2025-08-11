@@ -15,6 +15,7 @@
         'data/sequence.xml',
         'views/base_menu.xml',
         'views/todo_task_view.xml',
+        'wizard/assign_tasks_wizard_view.xml',
         'reports/task_report.xml'
     ],
     # 'assets': {

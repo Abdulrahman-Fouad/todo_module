@@ -1,5 +1,8 @@
+from email.policy import default
+
 from odoo import models, fields, api, exceptions
 from odoo.exceptions import ValidationError
+from odoo.tests import users
 
 
 class TodoTask(models.Model):
@@ -76,6 +79,13 @@ class TodoTask(models.Model):
             res.ref = self.env['ir.sequence'].next_by_code('task_sequence')
         return res
 
+    # ---------------------------------------- Wizard -------------------------------------
+    def action_open_assign_task_wizard(self):
+        action = self.env['ir.actions.actions']._for_xml_id('todo_management.assign_task_wizard_action')
+        action['context'] = {
+            'active_ids': self.ids,
+        }
+        return action
 
 class TodoTaskLines(models.Model):
     _name = 'todo.task.line'
