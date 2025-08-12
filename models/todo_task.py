@@ -70,11 +70,11 @@ class TodoTask(models.Model):
 
     # ---------------------------------------- User Constrains -------------------------------------
     @api.model
-    def _is_manager(self):
-        return self.env.user.has_group('todo_management.todo_task_manager_group')
+    def _is_not_user(self):
+        return not self.env.user.has_group('todo_management.todo_task_user_group')
 
     def write(self, vals):
-        if not self._is_manager():
+        if not self._is_not_user():
             for rec in self:
                 old_state = rec.state
                 new_state = vals.get('state', old_state)
