@@ -1,8 +1,5 @@
-from email.policy import default
-
 from odoo import models, fields, api, exceptions
-from odoo.exceptions import ValidationError
-from odoo.tests import users
+from odoo.exceptions import AccessError
 
 
 class TodoTask(models.Model):
@@ -71,6 +68,31 @@ class TodoTask(models.Model):
                 raise exceptions.ValidationError(
                     f"The Total Time {total_time} is greater than the Estimated Time {rec.estimated_time}")
 
+    # ---------------------------------------- User Constrains -------------------------------------
+    @api.model
+    def _is_manager(self):
+        return self.env.user.has_group('todo_management.todo_task_manager_group')
+
+    def write(self, vals):
+        if not self._is_manager():
+            for rec in self:
+                old_state = rec.state
+                new_state = vals.get('state', old_state)
+
+                # If state is NOT in progress, block all edits
+                if old_state != 'in_progress':
+                    raise AccessError("You can only modify tasks when they are In Progress.")
+
+                # If state is in progress, but they try to change other fields
+                allowed_keys = {'state'}
+                if set(vals.keys()) - allowed_keys:
+                    raise AccessError("You can only change the state from In Progress to Completed.")
+
+                # If trying to change to anything other than completed
+                if old_state == 'in_progress' and new_state != 'completed':
+                    raise AccessError("You can only mark the task as Completed from In Progress.")
+
+        return super(TodoTask, self).write(vals)
     # ---------------------------------------- Sequence -------------------------------------
     @api.model_create_multi
     def create(self, vals):
